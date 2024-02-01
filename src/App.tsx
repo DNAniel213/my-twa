@@ -2,6 +2,7 @@ import './App.css';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useTonConnect } from './hooks/useTonConnect';
 import { useCounterContract } from './hooks/useCounterContract';
+import '@twa-dev/sdk';
 
 function App() {
   const { connected } = useTonConnect();
@@ -11,14 +12,15 @@ function App() {
     <div className='App'>
       <div className='Container'>
         <TonConnectButton />
+        <b>This is a test contract that increments the contract's value when you send it some TON</b>
 
         <div className='Card'>
-          <b>Counter Address</b>
+          <b>Contract Address</b>
           <div className='Hint'>{address?.slice(0, 30) + '...'}</div>
         </div>
 
         <div className='Card'>
-          <b>Counter Value</b>
+          <b>Contract Current Value</b>
           <div>{value ?? 'Loading...'}</div>
         </div>
 
