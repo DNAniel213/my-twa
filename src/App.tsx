@@ -86,7 +86,7 @@ function App() {
   return (
     <div className='App'>
       <div className="gameframe">
-        <iframe className='gameframe' src="https://gamedevs.metaxar.io/blob/releases/WebGL/C5116F471C38D1EE/kisa_1_0_1/index.html" title="Iframe Example"></iframe>
+        <iframe className='gameframe' src="https://gamedevs.metaxar.io/blob/releases/WebGL/C5116F471C38D1EE/kisa_1_0_4/index.html" title="Iframe Example"></iframe>
       </div>
 
       <div className='Container'>
