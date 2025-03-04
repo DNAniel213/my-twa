@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 import { useTonConnect } from './hooks/useTonConnect';
@@ -10,6 +10,28 @@ function App() {
   const [tonConnectUI] = useTonConnectUI();
   const { connected } = useTonConnect();
   const { value, address, sendIncrement } = useCounterContract();
+  const [iframeSrc, setIframeSrc] = useState('');
+
+  useEffect(() => {
+    const fetchIframeSrc = async () => {
+      try {
+        console.log("Fetching iframe src...");
+        const response = await fetch('https://ton-metx-apps-default-rtdb.firebaseio.com/environment.json');
+        const data = await response.json();
+        console.log("Fetched data:", data); // Log the entire JSON response
+        if (data && data) {
+          setIframeSrc(data + "?address=" + tonConnectUI.account?.publicKey);
+          console.log("Iframe src fetched:", data);
+        } else {
+          console.error("URL not found in the fetched data");
+        }
+      } catch (error) {
+        console.error("Error fetching iframe src:", error);
+      }
+    };
+  
+    fetchIframeSrc();
+  }, [tonConnectUI.account?.address]);
 
   const Wallet_DST = Address.parse("EQAXOOVp83WBZk_dTzip9ZlletOiSIcZ7aW2XqipkXHLzXq6"); //destination wallet
   const Wallet_SRC = Address.parse("UQDfOf0DC7glxpBtCWqqEW8Fb1Ct3R5Rcc5nf-ySZ72RUAgd"); //source wallet???
@@ -37,7 +59,6 @@ function App() {
         }
       ]
     };
-
     tonConnectUI.sendTransaction(testTransaction);
   }
 
@@ -85,27 +106,23 @@ function App() {
 
   return (
     <div className='App'>
-      <div className="gameframe">
-        <iframe className='gameframe' src="https://gamedevs.metaxar.io/blob/releases/WebGL/C5116F471C38D1EE/kisa_1_0_4/index.html" title="Iframe Example"></iframe>
+      <div className='gameframe'>
+        {connected ? (
+          <iframe className='gameframe' src={iframeSrc} title="Iframe Example"></iframe>
+        ) : (
+          <div className='Container'>
+            <TonConnectButton />
+            <p>Please connect to view the game.</p>
+          </div>
+        )}
       </div>
 
       <div className='Container'>
-        <TonConnectButton />
-        <b>This is a test contract that increments the contract's value when you send it some TON</b>
-
         <div className='Card'>
-          <b>Contract Address</b>
-          <div className='Hint'>{address?.slice(0, 30) + '...'}</div>
+          <TonConnectButton />
+          <b>Player Public Key</b>
+          <div className='Hint'>{tonConnectUI.account?.publicKey+ '...'}</div>
         </div>
-
-        <div className='Card'>
-          <b>Contract Current Value</b>
-          <div>{value ?? 'Loading...'}</div>
-        </div>
-        <a
-          className={`Button ${connected ? 'Active' : 'Disabled'}`}
-          onClick={() => wah()}
-        >Test Claim dToken</a>
       </div>
     </div>
   );
